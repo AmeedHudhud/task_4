@@ -5,7 +5,7 @@ const VALID_CREDENTIALS = {
     password: "ameed0595",
 };
 
-describe('disciver jobs',()=>{
+describe('discover jobs',()=>{
     before(()=>{
         apiLogin(VALID_CREDENTIALS.email, VALID_CREDENTIALS.password).then((cookie)=>{
             x=cookie
