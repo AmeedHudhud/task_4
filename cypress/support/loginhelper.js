@@ -8,7 +8,9 @@ export const LOCATOR = {
     login:'[data-id="submit-login-btn"]'
 }
 export const MESSAGE = {
-    INVALID_CREDENTIALS:'Unable to login with the provided credentials'
+    INVALID_CREDENTIALS:'Unable to login',
+    VALIDATION_MESSAGE:'Please fill out this field.'
+
 }
 export const apiLogin = (email, password) => {
    return cy.request({
@@ -29,22 +31,23 @@ export const apiLogin = (email, password) => {
     });
 };
 export const enterFieldValue = (value, locator) => {
-    cy.get(locator).clear().type(value);
-  };
+    if(value==""){
+        cy.get(locator).clear().invoke('val',value);
+    }else{
+        cy.get(locator).clear().type(value);
+    }
+};
 export const uiLogin = (email, password) => {
     enterFieldValue(email,LOCATOR.email)
     enterFieldValue(password,LOCATOR.password)
     cy.get(LOCATOR.login).click()
-    if(email==""||password==""){
-
-
-    }else{
-        cy.contains(MESSAGE.INVALID_CREDENTIALS)
+    if(email==""){
+        cy.get(`${LOCATOR.email}:invalid`).invoke('prop','validationMessage').should('equal','Please fill out this field.')
+        
+    }else if(password==""){
+        cy.get(`${LOCATOR.password}:invalid`).invoke('prop','validationMessage').should('equal','Please fill out this field.')
     }
-   
-    // cy.visit(URL.UI_LOGIN)
-    // cy.get('[placeholder="Email"]').clear().type(INVALID_CREDENTIALS.email)
-    // cy.get('[placeholder="Password"]').clear().type(VALID_CREDENTIALS.password)
-    // cy.get('[data-id="submit-login-btn"]').click()
-    // cy.contains('Unable to login with the provided credentials').should('be.visible')
+    else{
+        cy.contains(MESSAGE.INVALID_CREDENTIALS).should("exist");
+    }
 }
