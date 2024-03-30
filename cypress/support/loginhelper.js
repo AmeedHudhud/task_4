@@ -42,10 +42,10 @@ export const uiLogin = (email, password) => {
     enterFieldValue(password,LOCATOR.password)
     cy.get(LOCATOR.login).click()
     if(email==""){
-        cy.get(`${LOCATOR.email}:invalid`).invoke('prop','validationMessage').should('equal','Please fill out this field.')
+        cy.get(`${LOCATOR.email}`).invoke('prop','validationMessage').should('equal','Please fill out this field.')
         
     }else if(password==""){
-        cy.get(`${LOCATOR.password}:invalid`).invoke('prop','validationMessage').should('equal','Please fill out this field.')
+        cy.get(`${LOCATOR.password}`).invoke('prop','validationMessage').should('equal','Please fill out this field.')
     }
     else{
         cy.contains(MESSAGE.INVALID_CREDENTIALS).should("exist");
