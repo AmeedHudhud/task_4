@@ -17,6 +17,7 @@ describe("discover jobs", () => {
     cy.visit("https://talent500.co/jobs");
     cy.wait(3000);
   });
+  
   it("Verify the ability to filter jobs by input search field", () => {
     enterFieldValue(discoverjobhelper.INFORMATION.SKILLS.VALID_SKILL,discoverjobhelper.LOCATORS.inputFieldSkills);
     discoverjobhelper.clickButton(discoverjobhelper.TEST_CONSTANTS.searchButton,true)
