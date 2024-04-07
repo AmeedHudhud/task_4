@@ -1,11 +1,16 @@
+/*
+*   test case for setting page "https://talent500.co/account-settings"
+*/
 import { apiLogin,enterFieldValue } from "./support/loginhelper";
-// import { VALID_CREDENTIALS } from './login.cy'
+import {VALID_CREDENTIALS} from "../cypress/login.cy";
+import { clickButton } from "./support/discoverjobs";
 import * as settinghelper from "./support/setting"
-export const VALID_CREDENTIALS = {
-    email: "ameedhudhud0@gmail.com",
-    password: "ameed0595",
-};
 let x
+const NEW_CREDENTIALS = {
+    email : 'ameedhudhud2003@gmail.com',
+    password : 'ameed059',
+    shortPassword : '123' 
+}
 describe('setting',()=>{
     before(()=>{
         apiLogin(VALID_CREDENTIALS.email, VALID_CREDENTIALS.password).then((cookie)=>{
@@ -17,100 +22,52 @@ describe('setting',()=>{
         cy.visit('https://talent500.co/account-settings');
         cy.wait(3000)
     })
-    it('verify from email',()=>{
+    it('Verify the label displays the correct email of the logged-in user',()=>{
         cy.contains(settinghelper.TEST_CONSTANTS.LOGIN).siblings().should('contain',VALID_CREDENTIALS.email)
     })
-    it('change password // current password mismatch',()=>{
-        cy.contains(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD).click()
-        cy.get(settinghelper.LOCATORS.oldPasswordField).clear().type('ameed059')
-        cy.get(settinghelper.LOCATORS.newPasswordField).clear().type('ameed059500')
-        cy.get(settinghelper.LOCATORS.confirmPasswordField).clear().type('ameed059500')
-        cy.get(settinghelper.LOCATORS.Button).contains(settinghelper.TEST_CONSTANTS.SAVE_PASSWORD).click();
+    it('Verify that the user is unable to change the password with a old mismatched password',()=>{
+        clickButton(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD,true)
+        enterFieldValue(`${VALID_CREDENTIALS.password}00`,settinghelper.LOCATORS.oldPasswordField)
+        enterFieldValue(NEW_CREDENTIALS.password,settinghelper.LOCATORS.newPasswordField)
+        enterFieldValue(NEW_CREDENTIALS.password,settinghelper.LOCATORS.confirmPasswordField)
+        clickButton(settinghelper.TEST_CONSTANTS.SAVE_PASSWORD,true)
         settinghelper.verifyMessage(settinghelper.MESSAGE.mismatchOldPassword)
-        // cy.get('#root').should('contain',settinghelper.MESSAGE.mismatchOldPassword)
-
     })
-    it('change password // new password mismatch',()=>{
-        cy.contains(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD).click()
-        cy.get(settinghelper.LOCATORS.oldPasswordField).clear().type('ameed0595')
-        cy.get(settinghelper.LOCATORS.newPasswordField).clear().type('ameed05950')
-        cy.get(settinghelper.LOCATORS.confirmPasswordField).clear().type('ameed059500')
-        cy.get(settinghelper.LOCATORS.Button).contains(settinghelper.TEST_CONSTANTS.SAVE_PASSWORD).click();
+    it('Verify that the user is unable to change the password with a new, mismatched password',()=>{
+        clickButton(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD,true)
+        enterFieldValue(VALID_CREDENTIALS.password,settinghelper.LOCATORS.oldPasswordField)
+        enterFieldValue(NEW_CREDENTIALS.password,settinghelper.LOCATORS.newPasswordField)
+        enterFieldValue(`${NEW_CREDENTIALS.password}00` ,settinghelper.LOCATORS.confirmPasswordField)
+        clickButton(settinghelper.TEST_CONSTANTS.SAVE_PASSWORD,true)
         settinghelper.verifyMessage(settinghelper.MESSAGE.mismatchNewPassword)
     })
-    it('change password // new password less than 8 char',()=>{
-        cy.contains(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD).click()
-        cy.get(settinghelper.LOCATORS.oldPasswordField).clear().type('ameed0595')
-        cy.get(settinghelper.LOCATORS.newPasswordField).clear().type('123')
-        cy.get(settinghelper.LOCATORS.confirmPasswordField).clear().type('123')
-        cy.get(settinghelper.LOCATORS.Button).contains(settinghelper.TEST_CONSTANTS.SAVE_PASSWORD).click();
+    it.only('Verify that the user is unable to change the password with a new, mismatched password',()=>{
+        clickButton(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD,true)
+        enterFieldValue(VALID_CREDENTIALS.password,settinghelper.LOCATORS.oldPasswordField)
+        enterFieldValue(VALID_CREDENTIALS.password,settinghelper.LOCATORS.newPasswordField)
+        enterFieldValue(VALID_CREDENTIALS.password,settinghelper.LOCATORS.confirmPasswordField)
+        clickButton(settinghelper.TEST_CONSTANTS.SAVE_PASSWORD,true)
+        settinghelper.verifyMessage(settinghelper.MESSAGE.samePassword)
+    })
+
+    it('Verify that the user is unable to change the password with a new password of less than 8 characters',()=>{
+        clickButton(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD,true)
+        enterFieldValue(VALID_CREDENTIALS.password,settinghelper.LOCATORS.oldPasswordField)
+        enterFieldValue(NEW_CREDENTIALS.shortPassword,settinghelper.LOCATORS.newPasswordField)
+        enterFieldValue(NEW_CREDENTIALS.shortPassword ,settinghelper.LOCATORS.confirmPasswordField)
+        clickButton(settinghelper.TEST_CONSTANTS.SAVE_PASSWORD,true)
         settinghelper.verifyMessage(settinghelper.MESSAGE.shortPassword)
-
-        // cy.get('#root').should('contain','Ensure this field has at least 8 characters.')
     })
-    it('change password ',()=>{
-        cy.contains(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD).click()
-        enterFieldValue('ameed0595',settinghelper.LOCATORS.oldPasswordField)
-        // cy.get(settinghelper.LOCATORS.oldPasswordField).clear().type('ameed05953')
-        cy.get(settinghelper.LOCATORS.newPasswordField).clear().type('ameed059')
-        cy.get(settinghelper.LOCATORS.confirmPasswordField).clear().type('ameed059')
-        cy.get(settinghelper.LOCATORS.Button).contains(settinghelper.TEST_CONSTANTS.SAVE_PASSWORD).click()
+    it('Verify user ability to change password',()=>{
+        clickButton(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD,true)
+        enterFieldValue(VALID_CREDENTIALS.password,settinghelper.LOCATORS.oldPasswordField)
+        enterFieldValue(VALID_CREDENTIALS.password,settinghelper.LOCATORS.oldPasswordField)
+        enterFieldValue(NEW_CREDENTIALS.password,settinghelper.LOCATORS.newPasswordField)
+        enterFieldValue(NEW_CREDENTIALS.spassword ,settinghelper.LOCATORS.confirmPasswordField)
         cy.contains(settinghelper.MESSAGE.changePassword).should('exist')
-        // settinghelper.verifyMessage(settinghelper.MESSAGE.changePassword)
     })
-
-    // it.only('change email //new email',()=>{
-    //     // settinghelper.changeEmail('ameedhudhud200020@gmail.com','ameed0595')
-    //     //     cy.request({
-    //     //     method: "POST",
-    //     //     url: 'https://prod-warmachine.talent500.co/api/users/change_email/',
-    //     //     body: {
-    //     //         email: 'ameedhudhud200020@gmail.com',
-    //     //         password: 'ameed0595',
-    //     //     },
-    //     //     headers: {
-    //     //         "Content-Type": "application/json",
-    //     //         "Authorization": x
-    //     //     },
-    //     // }).then((response) => {
-    //     //     expect(response.body).to.include('Verification email sent');
-    //     // });
-    // })
-    // it('change email // same email',()=>{
-    //     cy.request({
-    //         method: "POST",
-    //         url: 'https://prod-warmachine.talent500.co/api/users/change_email/',
-    //         body: {
-    //             email: 'ameedhudhud2000@gmail.com',
-    //             password: 'ameed0595',
-    //         },
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Authorization": x
-    //         },
-    //         failOnStatusCode: false,    
-    //     }).then((response) => {
-    //         expect(response.body).to.include('Already raise change request for this email');
-    //     });
-
-    // })
-    // it('change email // error more than 3 time',()=>{
-    //     cy.request({
-    //         method: "POST",
-    //         url: 'https://prod-warmachine.talent500.co/api/users/change_email/',
-    //         body: {
-    //             email: 'ameedhudhud2000@gmail.com',
-    //             password: 'ameed0595',
-    //         },
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Authorization": x
-    //         },
-    //         failOnStatusCode: false,    
-    //     }).then((response) => {
-    //         expect(response.body).to.include('  ');
-    //     });
-
-    // })
+    it('Verify user ability to change email',()=>{
+        settinghelper.changeEmail(NEW_CREDENTIALS.email,NEW_CREDENTIALS.password,x)
+    })
 })
 

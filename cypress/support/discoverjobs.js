@@ -1,6 +1,5 @@
 export const LOCATORS = {
-  inputFieldSkills:
-    '[placeholder="Search by any field (e.g skills, title, etc.)"]',
+  inputFieldSkills:'[placeholder="Search by any field (e.g skills, title, etc.)"]',
   firstJob: '[data-id="job0-first-CTA"]',
   pageRoot: "#root",
   companiesMenu: '[data-id="jobs-DDHeaderWrapper"]',
@@ -9,6 +8,7 @@ export const LOCATORS = {
   remote: '[type="checkbox"]',
   inputFieldCompany: '[placeholder="Search company"]',
   filteredCompanyList: "label input",
+  searchButton: "Search",
 };
 export const INFORMATION = {
   SKILLS: {
@@ -21,11 +21,12 @@ export const INFORMATION = {
     },
     withoutJob: {
       name: "Talent500.",
+      invalidName : 'qqq'
     },
   },
   EXPERIENCE: {
     RANGE1: "0 - 1 years",
-    RANGE2: "1 - 3 years",
+    RANGE2: "1 - 4 years",
   },
   LOCATION: {
     withJob: {
@@ -39,9 +40,6 @@ export const INFORMATION = {
     NAME: "Remote",
   },
 };
-export const TEST_CONSTANTS = {
-  searchButton: "Search",
-};
 export const MESSAGE = {
   NO_JOB: "Ah, no jobs for these filters right now.",
 };
@@ -51,15 +49,15 @@ export const redirectToInformationPage = (locator) => {
     cy.visit(url);
   });
 };
-export const verifyInformation = (value) => {
-  if (Array.isArray(value)) {
-    value.forEach((val) => {
-      cy.get(LOCATORS.pageRoot).should("contain", val);
-    });
-  } else {
-    cy.get(LOCATORS.pageRoot).should("contain", value);
-  }
-};
+export const verifyInformationExistance = (information) =>{
+  information.forEach((value)=>{
+    if(value.exist){
+      cy.get(LOCATORS.pageRoot).should("contain", value.name);
+    }else{
+      cy.get(LOCATORS.pageRoot).should("not.contain", value.name);
+    }
+  })
+}
 export const clickButton = (locator, text = false) => {
   if (!text) {
     cy.get(locator).click({ force: true });
@@ -67,14 +65,19 @@ export const clickButton = (locator, text = false) => {
     cy.contains(locator).click({ force: true });
   }
 };
-export const selectMenu = (menu, information) => {
+export const selectFromMenu = (menu, information) => {
   clickButton(menu);
   cy.contains(information).click();
 };
-export const verifyCompany = (name) => {
-  cy.get(LOCATORS.filteredCompanyList).then((input) => {
-    expect(input.attr("name")).to.equal(name);
-  });
+export const verifyCompanyExistance = (name,existance=true) => {
+  cy.contains(name).should((el)=>{
+    if(existance){
+      expect(el.length).not.to.equal(0)
+    }else{
+      expect(el.length).to.equal(0)
+    }
+    
+  })
 };
 export const verifyTextExist = (value) => {
   cy.get(LOCATORS.pageRoot).should("contain", value);

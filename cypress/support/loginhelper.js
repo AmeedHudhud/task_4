@@ -9,8 +9,8 @@ export const LOCATOR = {
 }
 export const MESSAGE = {
     INVALID_CREDENTIALS:'Unable to login',
-    VALIDATION_MESSAGE:'Please fill out this field.'
-
+    EMPTY_FIELD:'Please fill out this field.',
+    INVALID_EMAIL : `Please include an '@' in the email address. 'withoutspecialcharactor' is missing an '@'.`
 }
 export const apiLogin = (email, password) => {
    return cy.request({
@@ -27,7 +27,6 @@ export const apiLogin = (email, password) => {
         expect(response.status).to.eq(200);
         expect(response.body.message).to.include('Verified');
         return `JWT ${response.body.token}`
-        // cy.setCookie('authToken', `JWT ${response.body.token}`)
     });
 };
 export const enterFieldValue = (value, locator) => {
@@ -41,13 +40,16 @@ export const uiLogin = (email, password) => {
     enterFieldValue(email,LOCATOR.email)
     enterFieldValue(password,LOCATOR.password)
     cy.get(LOCATOR.login).click()
-    if(email==""){
-        cy.get(`${LOCATOR.email}`).invoke('prop','validationMessage').should('equal','Please fill out this field.')
-        
-    }else if(password==""){
-        cy.get(`${LOCATOR.password}`).invoke('prop','validationMessage').should('equal','Please fill out this field.')
-    }
-    else{
+
+    if(email==""&&password==""){
+        cy.get(`${LOCATOR.email}`).invoke('prop','validationMessage').should('equal',MESSAGE.EMPTY_FIELD)
+    }else if(email==""&&password!=""){
+        cy.get(`${LOCATOR.email}`).invoke('prop','validationMessage').should('equal',MESSAGE.EMPTY_FIELD)
+    }else if(password==""&&email!=""){
+        cy.get(`${LOCATOR.password}`).invoke('prop','validationMessage').should('equal',MESSAGE.EMPTY_FIELD)
+    }else if(!email.includes('@')){
+        cy.get(`${LOCATOR.email}`).invoke('prop','validationMessage').should('equal',MESSAGE.INVALID_EMAIL)
+    }else{
         cy.contains(MESSAGE.INVALID_CREDENTIALS).should("exist");
     }
 }
