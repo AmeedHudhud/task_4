@@ -32,8 +32,11 @@ export const apiLogin = (email, password) => {
 export const enterFieldValue = (value, locator) => {
     if(value==""){
         cy.get(locator).clear().invoke('val',value);
+    cy.wait(2000);
     }else{
         cy.get(locator).clear().type(value);
+    cy.wait(2000);
+
     }
 };
 export const uiLogin = (email, password) => {

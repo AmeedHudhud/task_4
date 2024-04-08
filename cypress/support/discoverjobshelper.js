@@ -26,7 +26,6 @@ export const INFORMATION = {
   },
   EXPERIENCE: {
     RANGE1: "0 - 1 years",
-    RANGE2: "1 - 4 years",
   },
   LOCATION: {
     withJob: {
@@ -47,8 +46,10 @@ export const redirectToInformationPage = (locator) => {
   cy.get(locator).then(($el) => {
     const url = $el.prop("href");
     cy.visit(url);
+    cy.wait(3000);
   });
 };
+
 export const verifyInformationExistance = (information) =>{
   information.forEach((value)=>{
     if(value.exist){
@@ -61,13 +62,17 @@ export const verifyInformationExistance = (information) =>{
 export const clickButton = (locator, text = false) => {
   if (!text) {
     cy.get(locator).click({ force: true });
+    cy.wait(2000);
   } else {
     cy.contains(locator).click({ force: true });
+    cy.wait(2000);
   }
 };
+
 export const selectFromMenu = (menu, information) => {
   clickButton(menu);
   cy.contains(information).click();
+  cy.wait(2000)
 };
 export const verifyCompanyExistance = (name,existance=true) => {
   cy.contains(name).should((el)=>{
@@ -82,3 +87,10 @@ export const verifyCompanyExistance = (name,existance=true) => {
 export const verifyTextExist = (value) => {
   cy.get(LOCATORS.pageRoot).should("contain", value);
 };
+
+export const verifyExperience = (range) => {
+  const [minString, maxString] = range.split(" - ");
+  const max = parseInt(maxString.replace(/\D/g, ''), 10);
+  cy.wrap(minString <= 0 && max <= 4).should("be.true");
+}
+

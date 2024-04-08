@@ -4,11 +4,10 @@ export const LOCATORS = {
     confirmPasswordField : '[placeholder="confirm password"]',
     Button : 'button'
 }
-export const TEST_CONSTANTS = {
-    LOGIN : 'Logged in as',
-    CHANGE_PASSWORD : 'Change Password',
-    SAVE_PASSWORD : 'Save'
-}
+export const LOGIN = 'Logged in as'
+export const CHANGE_PASSWORD = 'Change Password'
+export const SAVE_PASSWORD = 'Save'
+
 export const MESSAGE = {
     mismatchOldPassword : 'The password you entered is incorrect. Please try again.',
     mismatchNewPassword : 'Password Mismatch',
@@ -35,3 +34,6 @@ export const changeEmail = (email,password,auth) => {
         expect(response.body).to.include('Verification email sent');
     });
 } 
+export const verifyFromText = (place,text) => {
+    cy.contains(place).siblings().should('contain',text)
+}

@@ -1,7 +1,6 @@
 /*
 *   test case for login page "https://talent500.co/auth/signin?redirect_to=jobs"
 */
-import { beforeEach } from 'mocha';
 import * as loginhelper from './support/loginhelper'
 export const VALID_CREDENTIALS = {
     email: "ameedhudhud676@gmail.com",
@@ -12,7 +11,7 @@ const INVALID_CREDENTIALS = {
     password: "ameed",
     wrongemail : 'ameedgmail.com'//without '@'
 };
-describe('login', () => {
+describe('Login Scenarios', () => {
     beforeEach(()=>{
         cy.visit(loginhelper.URL.UI_LOGIN)
     })
@@ -38,3 +37,4 @@ describe('login', () => {
         loginhelper.apiLogin(VALID_CREDENTIALS.email, VALID_CREDENTIALS.password)
     })
 })
+
