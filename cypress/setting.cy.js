@@ -41,7 +41,7 @@ describe('setting',()=>{
         clickButton(settinghelper.TEST_CONSTANTS.SAVE_PASSWORD,true)
         settinghelper.verifyMessage(settinghelper.MESSAGE.mismatchNewPassword)
     })
-    it.only('Verify that the user is unable to change the password with a new, mismatched password',()=>{
+    it('Verify that the user is unable to change the password with a new, mismatched password',()=>{
         clickButton(settinghelper.TEST_CONSTANTS.CHANGE_PASSWORD,true)
         enterFieldValue(VALID_CREDENTIALS.password,settinghelper.LOCATORS.oldPasswordField)
         enterFieldValue(VALID_CREDENTIALS.password,settinghelper.LOCATORS.newPasswordField)
