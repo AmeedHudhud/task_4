@@ -91,6 +91,6 @@ export const verifyTextExist = (value) => {
 export const verifyExperience = (range) => {
   const [minString, maxString] = range.split(" - ");
   const max = parseInt(maxString.replace(/\D/g, ''), 10);
-  cy.wrap(minString <= 0 && max <= 4).should("be.true");
+  cy.wrap(minString <= 1 && max <= 4).should("be.true");
 }
 
